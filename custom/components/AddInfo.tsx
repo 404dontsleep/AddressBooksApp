@@ -54,6 +54,7 @@ export default function AddInfoComponent() {
             (key) =>
               key !== "_id" && (
                 <TextInput
+                  keyboardType={key === "phone" ? "phone-pad" : "default"}
                   key={key}
                   label={key.slice(0, 1).toUpperCase() + key.slice(1)}
                   value={info[key as keyof IInfo]}
