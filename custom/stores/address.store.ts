@@ -21,7 +21,17 @@ const useInfoStore = create<IInfoStore>((set, get) => ({
     if (infos.success) set({ infos: infos.data });
   },
   createInfo: async (info) => {
-    const createdInfo = await InfoFunction.CreateInfo(info);
+    const defaultInfo = {
+      avatar: "https://cdn-icons-png.flaticon.com/512/9187/9187604.png",
+      address: "1",
+      email: "1",
+      name: "1",
+      phone: "1",
+    };
+    const createdInfo = await InfoFunction.CreateInfo({
+      ...defaultInfo,
+      ...info,
+    });
     if (createdInfo.success) get().refresh();
     return createdInfo;
   },

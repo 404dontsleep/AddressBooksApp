@@ -33,7 +33,7 @@ export async function EditInfo(
   _id: string,
   info: IInfo
 ): Promise<IStatus & { data: IInfo }> {
-  const { data } = await axiosInstance.put(`/info/${_id}`, info);
+  const { data } = await axiosInstance.post(`/info/${_id}`, info);
   return data;
 }
 

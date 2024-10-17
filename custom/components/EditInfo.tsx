@@ -6,46 +6,40 @@ import {
   StyleSheet,
   View,
   Platform,
-  Pressable,
 } from "react-native";
-import * as ImagePicker from "expo-image-picker";
 import { Appbar, Button, TextInput } from "react-native-paper";
 import { IInfo } from "../api/info.api";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigation } from "expo-router";
+import NotFoundScreen from "@/app/+not-found";
+import * as ImagePicker from "expo-image-picker";
+
 const trans: { [key: string]: string } = {
   avatar: "Image",
   name: "Name",
   address: "Cost",
   email: "Type",
 };
-export default function AddInfoComponent() {
-  const { createInfo } = useInfoStore((state) => state);
+export default function EditInfoComponent({ _id }: { _id: string }) {
+  const { editInfo, infos } = useInfoStore((state) => state);
+  const findInfo = infos.find((info) => info._id === _id);
+  if (!findInfo) {
+    return <NotFoundScreen />;
+  }
+  const [info, setInfo] = useState<IInfo>(findInfo);
   const navigation = useNavigation();
-  const [info, setInfo] = useState<IInfo>({
-    avatar: "https://cdn-icons-png.flaticon.com/512/9187/9187604.png",
-    name: "",
-    address: "",
-    email: "",
-  } as IInfo);
   const handleChange = (PartialInfo: Partial<IInfo>) => {
     setInfo((state) => ({ ...state, ...PartialInfo }));
   };
   const handleSubmit = async () => {
-    const { success } = await createInfo(info);
+    const { success } = await editInfo(_id, info);
     if (success) {
       if (Platform.OS === "web") {
-        alert("Info added successfully");
+        alert("Update successfully");
       }
       if (Platform.OS === "android") {
-        Alert.alert("Info added successfully");
+        Alert.alert("Update successfully");
       }
-      setInfo({
-        avatar: "https://cdn-icons-png.flaticon.com/512/9187/9187604.png",
-        name: "",
-        address: "",
-        email: "",
-      } as IInfo);
       navigation.goBack();
     }
   };
@@ -93,7 +87,9 @@ export default function AddInfoComponent() {
           {Object.keys(info).map(
             (key) =>
               key !== "_id" &&
-              key !== "avatar" && (
+              key !== "__v" &&
+              key !== "avatar" &&
+              key !== "phone" && (
                 <TextInput
                   keyboardType={
                     key === "phone" || key === "address"
@@ -110,7 +106,7 @@ export default function AddInfoComponent() {
               )
           )}
           <Button mode='outlined' onPress={handleSubmit}>
-            Add
+            Edit
           </Button>
         </View>
       </ScrollView>

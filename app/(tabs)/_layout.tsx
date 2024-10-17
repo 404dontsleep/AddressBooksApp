@@ -1,9 +1,10 @@
 import { Tabs } from "expo-router";
-import React from "react";
+import React, { Fragment } from "react";
 
 import { TabBarIcon } from "@/components/navigation/TabBarIcon";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
+import { View } from "react-native";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -16,9 +17,9 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
-        name='index'
+        name='info'
         options={{
-          title: "Address Books",
+          title: "Dữ liệu sản phẩm",
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon
               name={
@@ -27,6 +28,18 @@ export default function TabLayout() {
               color={color}
             />
           ),
+        }}
+      />
+      <Tabs.Screen
+        name='edit'
+        options={{
+          href: null,
+        }}
+      />
+      <Tabs.Screen
+        name='index'
+        options={{
+          href: null,
         }}
       />
       <Tabs.Screen

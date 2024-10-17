@@ -4,6 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { IInfo } from "../api/info.api";
 import { useEffect, useState } from "react";
 import useInfoStore from "../stores/address.store";
+import { Href, Link } from "expo-router";
 export default function InfoComponent() {
   const { getInfos, infos, _refresh } = useInfoStore((state) => state);
   const data = infos;
@@ -13,7 +14,7 @@ export default function InfoComponent() {
   return (
     <>
       <Appbar.Header>
-        <Appbar.Content title='Address Book' />
+        <Appbar.Content title='Dữ liệu sản phẩm' />
       </Appbar.Header>
       <ScrollView>
         <View style={{ gap: 8, padding: 16 }}>
@@ -25,7 +26,14 @@ export default function InfoComponent() {
     </>
   );
 }
-
+function formatPhoneNumber(phoneNumberString: string) {
+  const cleaned = phoneNumberString.replace(/\D/g, "");
+  const match = cleaned.match(/^(\d{3})(\d{3})(\d{3,4})$/);
+  if (match) {
+    return `(${match[1]}) ${match[2]}-${match[3]}`;
+  }
+  return null;
+}
 function Info({ info }: { info: IInfo }) {
   const { name, address, email, phone, avatar } = info;
   const [expanded, setExpanded] = useState(false);
@@ -35,18 +43,18 @@ function Info({ info }: { info: IInfo }) {
         <View style={{ flexDirection: "row", gap: 8, alignItems: "center" }}>
           <Image
             source={{ uri: avatar }}
-            style={{ width: 40, height: 40, borderRadius: 20 }}
+            style={{ width: 100, height: 100, borderRadius: 20 }}
           />
-          <Text style={{ fontSize: 18, flex: 1 }}>{phone}</Text>
-          <DeleteIcon _id={info._id} />
-        </View>
-        {expanded && (
-          <View style={{ gap: 8, marginLeft: 48 }}>
-            <Text>{name}</Text>
-            <Text style={{ color: "gray" }}>{address}</Text>
-            <Text>{email}</Text>
+          <View style={{ gap: 8, marginLeft: 8, flex: 1 }}>
+            <Text>Name: {name}</Text>
+            <Text>Cost: {address}</Text>
+            <Text>Type: {email}</Text>
           </View>
-        )}
+          <>
+            <EditIcon _id={info._id} />
+            <DeleteIcon _id={info._id} />
+          </>
+        </View>
       </View>
     </Pressable>
   );
@@ -57,6 +65,13 @@ function DeleteIcon({ _id }: { _id: string }) {
     <Pressable onPress={() => deleteInfo(_id)}>
       <Ionicons name='trash-bin-outline' size={24} color='red' />
     </Pressable>
+  );
+}
+function EditIcon({ _id }: { _id: string }) {
+  return (
+    <Link href={`/edit?_id=${_id}` as Href}>
+      <Ionicons name='create-outline' size={24} color='blue' />
+    </Link>
   );
 }
 const styles = StyleSheet.create({
